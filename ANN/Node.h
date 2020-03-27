@@ -5,6 +5,6 @@ class Node
 {
 
 public:
-    float input, output;
+    double input, output;
 };
 
