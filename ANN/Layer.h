@@ -5,8 +5,7 @@
 #include <iostream>
 
 double Sigmoid(double x) {
-	double res = 1.0f / (1.0f + exp(-x));
-	return res;
+	return 1.0f / (1.0f + exp(-x));
 }
 
 struct Node {
@@ -28,14 +27,6 @@ public:
 	bool input_layer;
 	std::vector <Node> Nodes;
 
-	void add_nodes(int num) {
-		num_of_nodes = num;
-		Node dummy;
-		for (int i = 0; i < num; ++i) {
-			Nodes.push_back(dummy);
-		}
-	}
-
 	int get_num_nodes() { return num_of_nodes; }
 
 	void use_activate_func() {
@@ -51,11 +42,12 @@ public:
 	}
 
 	void print() {
-		std::cout << "Number of nodes: " << num_of_nodes << '\n';
-		std::cout << "Nodes		x	 y" << '\n';
+		//std::cout << "Number of nodes: " << num_of_nodes << '\n';
+		std::cout << "Nodes		activations" << '\n';
 
 		for (auto i = 0; i < Nodes.size(); ++i) {
-			std::cout << Nodes[i].input << '\t' << Nodes[i].output << '\n';
+			//std::cout << Nodes[i].input << '\t' << Nodes[i].output << '\n';
+			std::cout << Nodes[i].output << '\n';
 		}
 	}
 };
