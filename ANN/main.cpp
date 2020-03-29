@@ -1,9 +1,7 @@
 #include <iostream>
 #include "ANN.h"
-#include <map>
 #include <vector>
 #include <math.h>
-#include <random>
 
 //THE NEURAL NETWORK IS USED TO TRAIN THE LOGIC GATES
 int main() {

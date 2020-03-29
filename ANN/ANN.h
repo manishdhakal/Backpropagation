@@ -3,17 +3,17 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-#include <iterator>
 #include "Layer.h"
 #include <random>
 #define BIAS 1.0f
+
+// Sym: z -> input in neuron; a -> output of neuron; C -> Cost function; W -> weights
+// Sym: delta -> dC/dz
 
 
 double rand_wt_gen() {
 	return static_cast <double> (rand()) / static_cast<double> (RAND_MAX / 2) - 1;
 }
-// Sym: z -> input in neuron; a -> output of neuron; C -> Cost function; W -> weights
-// Sym: delta -> dC/dz
 
 struct Synapses {
 	int layer, initial_node, final_node;
