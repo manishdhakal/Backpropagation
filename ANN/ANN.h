@@ -3,8 +3,10 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-#include "Layer.h"
 #include <random>
+#include <string>
+#include "Layer.h"
+
 #define BIAS 1.0f
 
 // Sym: z -> input in neuron; a -> output of neuron; C -> Cost function; W -> weights
@@ -68,7 +70,7 @@ public:
 	}*/
 
 	
-	void add_layer(int num_nodes) {
+	void add_layer(int num_nodes, std::string activation_type="sigmoid") {
 		if (Layers.size() >= 1) {
 			auto last_layer_size = Layers.back().get_num_nodes();
 			for (int i = 0; i < last_layer_size; ++i) {
@@ -78,10 +80,9 @@ public:
 				}
 			}
 		}
-		Layer dummy(num_nodes);
+		Layer dummy(num_nodes, activation_type);
 		if (Layers.size() == 0) {
 			input_size = num_nodes;
-			dummy.input_layer = true;
 		}
 		Layers.push_back(dummy);
 	}
@@ -103,8 +104,13 @@ public:
 	}
 
 	//Derivative of node output wrt input
-	double da_dz(double z ) {
-		return Sigmoid(z) * (1.0f - Sigmoid(z));
+	double da_dz(double z, std::string activation_type = "sigmoid" ) {
+		if (activation_type == "relu") {
+			if (z <= 0.0f)
+				return 0.0f;
+			else return 1.0f;
+		}
+		return sigmoid(z) * (1.0f - sigmoid(z));
 	}
 
 	void fit(std::vector< std::vector <double> > input, std::vector< std::vector <double> > output,float learning_rate=0.1,  unsigned int epochs = 200) {
@@ -169,7 +175,7 @@ public:
 							}
 							dC_da[curr] = temp_dC_da;
 						}
-						dC_dz[curr] = da_dz(temp_layer.Nodes[j].input) * dC_da[curr];
+						dC_dz[curr] = da_dz(temp_layer.Nodes[j].input, temp_layer.activation_type) * dC_da[curr];
 						//std::cout << "delta:\t" << dC_dz[curr] << '\n';
 					}
 				}

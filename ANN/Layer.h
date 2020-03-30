@@ -1,10 +1,18 @@
 #pragma once
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <iostream>
+#include <string>
 
-double Sigmoid(double x) {
+double sigmoid(double x) {
 	return 1.0f / (1.0f + exp(-x));
+}
+
+double relu(double x) {
+	if (x < 0.0f) {
+		return 0;
+	}
+	else return x;
 }
 
 struct Node {
@@ -14,8 +22,8 @@ struct Node {
 class Layer
 {
 public:
-	Layer(int num_nodes=1, bool is_input_layer = false) {
-		input_layer = is_input_layer;
+	Layer(int num_nodes=1, std::string activation = "sigmoid") {
+		activation_type = activation;
 		num_of_nodes = num_nodes;
 		Node dummy;
 		for (int i = 0; i < num_nodes; ++i) {
@@ -23,21 +31,18 @@ public:
 		}
 	}
 	int num_of_nodes = 0;
-	bool input_layer;
+	std::string activation_type = "sigmoid";
 	std::vector <Node> Nodes;
 
 	int get_num_nodes() { return num_of_nodes; }
 
 	void use_activate_func() {
-		if (input_layer)
-			for (unsigned int i = 0; i < Nodes.size(); ++i) {
-				Nodes[i].output = Nodes[i].input;
-			}
-		else
-			for (unsigned int i = 0; i < Nodes.size(); ++i) {
-				auto op = Sigmoid(Nodes[i].input);
-				Nodes[i].output = op;
-			}
+		for (unsigned int i = 0; i < Nodes.size(); ++i) {
+			double op;
+			if (activation_type == "relu") op = relu(Nodes[i].input);
+			else op = sigmoid(Nodes[i].input);
+			Nodes[i].output = op;
+		}
 	}
 
 	void print() {
