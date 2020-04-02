@@ -12,14 +12,14 @@ int main() {
 		{0,0},
 		{1,1}
 	};
-	std::vector< std::vector <double> > op = { {1},{1},{0},{0} };
+	std::vector< std::vector <double> > op = { {0,1},{0,1},{1,0},{1,0} };
 
 	NeuralNetwork.add_layer(2);
 	NeuralNetwork.add_layer(4, "relu");
-	NeuralNetwork.add_layer(1, "sigmoid");
+	NeuralNetwork.add_layer(2, "softmax");
 	NeuralNetwork.is_valid();
 	NeuralNetwork.print();
-	NeuralNetwork.fit(data, op, 0.1, 2000);
+	NeuralNetwork.fit(data, op, 0.1, 3000);
 	std::vector< std::vector <double> >::iterator it;
 	for (unsigned int i = 0; i < data.size(); i++) {
 		auto it = data[i];

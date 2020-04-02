@@ -162,7 +162,11 @@ public:
 					for (int j = 0; j < temp_layer.Nodes.size(); ++j) {
 						NeuronIndicator curr = { i,j };
 						if (i == Layers.size()-1) {
-							dC_da[curr] = temp_layer.Nodes[j].output - output[m][j];
+
+							if (temp_layer.activation_type == "softmax") 
+								dC_da[curr] = -output[m][j] / temp_layer.Nodes[j].output;
+							else
+								dC_da[curr] = temp_layer.Nodes[j].output - output[m][j];
 							//std::cout << "Output Error:\n" << 0.5 * pow(temp_layer.Nodes[j].output - output[m][j], 2) << '\n';
 						}
 						else {

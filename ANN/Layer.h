@@ -49,7 +49,7 @@ public:
 				for (int j = 0; j < Nodes.size(); ++j) {
 					exps += exp(Nodes[j].input);
 				}
-				op = exp(Nodes[i].input);
+				op = exp(Nodes[i].input)/exps;
 			}
 			else op = sigmoid(Nodes[i].input);
 			Nodes[i].output = op;
