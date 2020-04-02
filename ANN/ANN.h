@@ -230,5 +230,14 @@ public:
 		}
 		return ret;
 	}
+
+	bool is_valid() {
+		for (int i = 0; i < Layers.size() -1; ++i) {
+			if (Layers[i].activation_type == "softmax") {
+				return false;
+			}
+		}
+		return true;
+	}
 };
 
