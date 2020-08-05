@@ -22,6 +22,7 @@ struct Node {
 class Layer
 {
 public:
+	
 	int num_of_nodes = 0;
 	std::string activation_type = "sigmoid";
 	std::vector <Node> Nodes;
@@ -43,14 +44,6 @@ public:
 		for (unsigned int i = 0; i < Nodes.size(); ++i) {
 			double op;
 			if (activation_type == "relu") op = relu(Nodes[i].input);
-
-			else if (activation_type == "softmax") {
-				double exps = 0.0f;
-				for (int j = 0; j < Nodes.size(); ++j) {
-					exps += exp(Nodes[j].input);
-				}
-				op = exp(Nodes[i].input)/exps;
-			}
 			else op = sigmoid(Nodes[i].input);
 			Nodes[i].output = op;
 		}

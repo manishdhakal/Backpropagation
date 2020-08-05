@@ -45,32 +45,13 @@ class ANN
 {
 
 public:
-	std::map <Synapses, double> Weights;/* = {
-		{{0,0,0}, -0.37901279211},
-		{{0,0,1}, 0.11520505212},
-		{{0,0,2}, 0.54512358213},
-		{{0,1,0}, -0.02775569221},
-		{{0,1,1}, -0.52161419},
-		{{0,1,2}, -0.84486143},
-		{{1,0,0}, -0.09770814311},
-		{{1,1,0}, -0.99783149321},
-		{{1,2,0}, 0.74709193331},
-	};*/
+	const std::string RELU = "relu";
+	const std::string SIGMOID = "sigmoid";
+	std::map <Synapses, double> Weights;
 	std::vector <Layer> Layers;
 	int input_size = 0;
 
-	/*ANN() {
-		Layer l1(2);
-		Layer l2(3);
-		Layer l3(1);
-
-		Layers.push_back(l1);
-		Layers.push_back(l2);
-		Layers.push_back(l3);
-	}*/
-
-	
-	void add_layer(int num_nodes, std::string activation_type="sigmoid") {
+	void add_layer(int num_nodes, std::string activation_type = "sigmoid") {
 		if (Layers.size() >= 1) {
 			auto last_layer_size = Layers.back().get_num_nodes();
 			for (int i = 0; i < last_layer_size; ++i) {
@@ -115,8 +96,9 @@ public:
 
 	void fit(std::vector< std::vector <double> > input, std::vector< std::vector <double> > output,float learning_rate=0.1,  unsigned int epochs = 200) {
 		//std::cout << " Input size :\t" << input.size() << '\n';
-		if (input_size != input[0].size() && Layers.back().Nodes.size() != output[0].size() ) {
-			std::cout << "Input size || Output size is  invalid \n";
+		if (input_size != input[0].size() || Layers.back().Nodes.size() != output[0].size() ) {
+			std::cout << "Input size or Output size are not invalid in the fit function\n";
+			exit(1);
 			return;
 		}
 		if (input.size() != output.size()) {
@@ -124,6 +106,7 @@ public:
 			return;
 		}
 		//print();
+		std::cout << "The model is being trained.....\n";
 		for (unsigned int e = 0; e < epochs; ++e) {
 			for (auto m = 0; m < input.size(); ++m) {
 				for (auto n = 0; n < input[m].size(); ++n) {
@@ -159,15 +142,14 @@ public:
 
 				for (int i = Layers.size() - 1; i >= 0; --i) {
 					auto temp_layer = Layers[i];
+					double sum_exps = 0;
+					
 					for (int j = 0; j < temp_layer.Nodes.size(); ++j) {
 						NeuronIndicator curr = { i,j };
 						if (i == Layers.size()-1) {
 
-							if (temp_layer.activation_type == "softmax") 
-								dC_da[curr] = -output[m][j] / temp_layer.Nodes[j].output;
-							else
-								dC_da[curr] = temp_layer.Nodes[j].output - output[m][j];
-							//std::cout << "Output Error:\n" << 0.5 * pow(temp_layer.Nodes[j].output - output[m][j], 2) << '\n';
+							dC_da[curr] = temp_layer.Nodes[j].output - output[m][j];
+
 						}
 						else {
 							double temp_dC_da = 0;
@@ -180,7 +162,6 @@ public:
 							dC_da[curr] = temp_dC_da;
 						}
 						dC_dz[curr] = da_dz(temp_layer.Nodes[j].input, temp_layer.activation_type) * dC_da[curr];
-						//std::cout << "delta:\t" << dC_dz[curr] << '\n';
 					}
 				}
 
@@ -190,18 +171,26 @@ public:
 						for (int k = 0; k < Layers[i + 1].Nodes.size(); ++k) {
 							Synapses a = { i,j,k };
 							Weights[a] -= learning_rate * dC_dW[a];
-							//std::cout << dC_dW[a] << '\t' << Weights[a] << '\n';
 						}
 					}
 				}
-				//print();
+			}
+
+			if ((e + 1) % 500 == 0) {
+				std::cout << "Completed Epoch: " << e + 1 << "\n";
 			}
 
 		}
-		//print();
 	}
 
 	std::vector<double> predict(std::vector<double> test_data) {
+		std::vector<double> ret;
+		
+		if (input_size != test_data.size() ) {
+			std::cout << "Input size  is not invalid in the predict function\n";
+			exit(1);
+			return ret;
+		}
 
 		for (int i = 0; i < test_data.size(); ++i) {
 			Layers[0].Nodes[i].input = test_data[i];
@@ -225,23 +214,14 @@ public:
 
 			}
 			Layers[l].use_activate_func();
-			//Layers[l].print();
 		}
 		auto op_layer = Layers.back();
-		std::vector<double> ret;
+		
 		for (unsigned int i = 0; i < op_layer.Nodes.size(); ++i) {
 			ret.push_back(op_layer.Nodes[i].output);
 		}
 		return ret;
 	}
 
-	bool is_valid() {
-		for (int i = 0; i < Layers.size() -1; ++i) {
-			if (Layers[i].activation_type == "softmax") {
-				return false;
-			}
-		}
-		return true;
-	}
 };
 
