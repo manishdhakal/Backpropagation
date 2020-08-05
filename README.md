@@ -10,4 +10,4 @@
 - Press the button "Local Windows Debugger" on the top.
 
 ### Output
-[!output](https://github.com/manishdhakal/Backpropagation/blob/master/output/ANN-op.png)
+![output](https://github.com/manishdhakal/Backpropagation/blob/master/output/ANN-op.png)
